@@ -1,0 +1,19 @@
+# SPDX-FileCopyrightText: © 2024 Menacit AB <foss@menacit.se>
+# SPDX-License-Identifier: CC-BY-SA-4.0
+# X-Context: Database course
+
+# Vagrant configuration for setting up lab system VM
+Vagrant.configure("2") do |config|
+  config.vm.hostname = "database-lab-system"
+  # Base lab system on Ubuntu 22.04 LTS
+  config.vm.box = "ubuntu/jammy64"
+  config.vm.box_check_update = false
+  # Expose course resources (labs, quizzes, etc.) on "/course_data" in lab VM
+  config.vm.synced_folder "..", "/course_data", SharedFoldersEnableSymlinksCreate: true
+  config.vm.synced_folder ".", "/vagrant", SharedFoldersEnableSymlinksCreate: true
+
+  # Provision VM using Ansible playbook
+  config.vm.provision "ansible_local" do |ansible|
+    ansible.playbook = "setup_lab_system.yml"
+  end
+end
