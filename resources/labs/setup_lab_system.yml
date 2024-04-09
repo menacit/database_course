@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: CC-BY-SA-4.0
 # X-Context: Database course
 
-- hosts: "all"
+- hosts: "all:localhost"
   vars:
     "default_user": "vagrant"
     "verify_os_version": true

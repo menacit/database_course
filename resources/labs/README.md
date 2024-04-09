@@ -43,6 +43,13 @@ If the command above executed successfully, issue the command below to access th
 $ vagrant ssh
 ```
 
+To verify the installation, execute the following command in the Vagrant SSH session - it should
+return a version number and nothing else:
+
+```
+$ docker compose version --short
+```
+
 Vagrant automatically shares the course "resources" directory between the host computer and the VM,
 which can be utilized to access lab files and similar. In order to access it, navigate to the path
 "/course\_data" once inside the lab environment.  
@@ -60,7 +67,21 @@ For assisted setup, install [Ansible](https://www.ansible.com/) (available in mo
 and run the Ansible playbook "resources/labs/setup\_lab\_system.yml" on the target system:
 
 ```
-$ sudo ansible-playbook -v -c local setup_lab_system.yml
+$ sudo ansible-playbook -v -c local -e default_user="${USER}" setup_lab_system.yml 
+```
+
+After the playbook execution, restart your host (or logout/login of the user session).
+In order to verify that the assisted installation was successful, execute the command below:
+
+```
+$ docker run --rm docker.io/library/hello-world:latest
+```
+
+To verify the installation/configuration of the Docker compose plugin, execute the following
+command - it should return a version number and nothing else:
+
+```
+$ docker compose version --short
 ```
 
 
