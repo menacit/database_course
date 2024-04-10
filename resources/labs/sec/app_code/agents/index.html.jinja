@@ -1,0 +1,27 @@
+{#
+SPDX-FileCopyrightText: © 2024 Menacit AB <foss@menacit.se>
+SPDX-License-Identifier: CC-BY-SA-4.0
+X-Context: Database course - Security lab - Index HTML template for "agents" app
+#}
+{% extends "base_template.html.jinja" %}
+{% block title %}{{ app_name }} app - Main list{% endblock %}
+{% block body %}
+<table>
+	<tr>
+		<th>Name</th>
+		<th>Code name</th>
+		<th>Salary (USD)</th>
+		<th>Profile link</th>
+	</tr>
+	<tr>
+{% for agent in agents %}
+	<tr>
+		<td>{{ agent.name }}</td>
+		<td>{{ agent.code_name }}</td>
+		<td>{{ agent.salary }}</td>
+		<td><a href="/profile/{{ agent.agent_id }}">View agent profile</a></td>
+	</tr>
+{% endfor %}
+	</tr>
+</table>
+{% endblock %}

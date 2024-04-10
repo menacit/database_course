@@ -1,0 +1,22 @@
+{#
+SPDX-FileCopyrightText: © 2024 Menacit AB <foss@menacit.se>
+SPDX-License-Identifier: CC-BY-SA-4.0
+X-Context: Database course - Security lab - Shared base HTML template for apps
+#}
+<!DOCTYPE html>
+<html>
+<meta charset="UTF-8">
+<head>
+<title>{% block title %}{% endblock %}</title>
+<style type="text/css">
+    background-color: black;
+    color: lightgreen;
+    font-family: monospace;
+</style>
+</head>
+<body>
+<div><h1>{% block title %}{% endblock %}</h1><div>
+<div>{% block body %}{% endblock %}</div>
+<div><marquee><h2 style="color: red">TOP SECRET++ TOP SECRET++ TOP SECRET++</h2></marquee></div>
+</body>
+</html>

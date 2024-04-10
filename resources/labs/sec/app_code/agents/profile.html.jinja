@@ -1,0 +1,45 @@
+{#
+SPDX-FileCopyrightText: © 2024 Menacit AB <foss@menacit.se>
+SPDX-License-Identifier: CC-BY-SA-4.0
+X-Context: Database course - Security lab - Profile HTML template for "agents" app
+#}
+{% extends "base_template.html.jinja" %}
+{% block title %}{{ app_name }} app - "{{ profile.code_name }}"{% endblock %}
+{% block body %}
+<script>
+	document.getElementById("assign_gadget_button").addEventListener("click", {
+		document.location.assign(
+			'/assign_gadget/{{ profile.agent_id }}/' + document.getElementById('gadget_id').value)
+	});
+</script>
+<div>
+	<h2>Agent profile information</h2>
+	<h3>Name</h3>
+	<p>{{ profile.name }}</p>
+	<h3>Code name</h3>
+	<p>{{ profile.code_name }}</p>
+	<h3>Code name</h3>
+	<p>{{ profile.salary }} USD</p>
+</div>
+<div>
+	<h2>Assigned gadgets (if any)</h2>
+	<ul>
+{% for assigned_gadget in assigned_gadgets %}
+	<li>{{ assigned_gadget }}</li>
+{% endfor %}
+	</ul>
+</div>
+<div>
+	<h2>Assign new gadget to agent</h2>
+	<select id="gadget_id">
+{% for available_gadget in available_gadgets %}
+		<option value="{{ available_gadget.gadget_id }}">
+			{{ available_gadget.name }} ({{ available_gadget.price }} USD)
+		</option>
+{% endfor %}
+	</select>
+	<button id="assign_gadget_button">
+		Assign gadget!
+	</button>
+</div>
+{% endblock %}

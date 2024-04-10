@@ -1,0 +1,19 @@
+---
+# SPDX-FileCopyrightText: © 2024 Menacit AB <foss@menacit.se>
+# SPDX-License-Identifier: CC-BY-SA-4.0
+# X-Context: Database course - Security lab - Gadgets application configuration
+
+# Set to "DEBUG" for additional application logging
+log_level: "INFO"
+
+# Key == Username, Value == Password
+app_users:
+  "malory": "h3art_trexler"
+  "algernop": "PigleyIII"
+  
+# Connection configuration for database
+database_settings:
+  remote_host: "database.int.agency.test"
+  database_name: "agency_data"
+  user: "shared_app_user"
+  password: "weshouldnotusethisaccount"

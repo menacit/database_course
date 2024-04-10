@@ -1,0 +1,51 @@
+---
+# SPDX-FileCopyrightText: © 2024 Menacit AB <foss@menacit.se>
+# SPDX-License-Identifier: CC-BY-SA-4.0
+# X-Context: Database course - Security lab - Docker Compose file
+
+services:
+  # ---------------------------------------------------------------------------
+  "database.int.agency.test":
+    build:
+      context: "./database/build_context"
+    networks:
+      - "lab-db_sec"
+    environment:
+      "POSTGRES_USER": "db_admin"
+      "POSTGRES_PASSWORD": "Ct=Snackul4"
+      "POSTGRES_DB": "agency_data"
+    volumes:
+      - "./database/first_startup_scripts:/docker-entrypoint-initdb.d:ro"
+      - "./database/data:/var/lib/postgresql/data:rw"
+    healthcheck:
+      test:
+        - "CMD"
+        - "pg_isready"
+        - "--dbname"
+        - "agency_data"
+        - "--user"
+        - "db_admin"
+      interval: "3s"
+      retries: 10
+
+  # ---------------------------------------------------------------------------
+  "agents.int.agency.test":
+    build:
+      context: "./app_code"
+      args:
+        "APP_NAME": "agents"
+    networks:
+      - "lab-db_sec"
+    volumes:
+      - "./app_configuration/agents.yml:/etc/app_configuration.yml:ro"
+    ports:
+      - "127.0.0.1:10001:5000"
+    depends_on:
+      "database.int.agency.test":
+        condition: "service_healthy"
+
+# -----------------------------------------------------------------------------
+networks:
+  "lab-db_sec":
+    driver_opts:
+      "com.docker.network.bridge.name": "lab-db_sec"
