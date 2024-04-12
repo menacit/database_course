@@ -12,6 +12,12 @@ Vagrant.configure("2") do |config|
   config.vm.synced_folder "..", "/course_data", SharedFoldersEnableSymlinksCreate: true
   config.vm.synced_folder ".", "/vagrant", SharedFoldersEnableSymlinksCreate: true
 
+  # Configure port forwarding of (10001-10009/TCP) for accessing lab web applications running in VM
+  (1..9).each do |port_suffix|
+    port = 10000 + port_suffix
+    config.vm.network "forwarded_port", guest: port, host: port, host_ip: "127.0.0.1"
+  end
+
   # Provision VM using Ansible playbook
   config.vm.provision "ansible_local" do |ansible|
     ansible.playbook = "setup_lab_system.yml"

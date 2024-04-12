@@ -7,15 +7,23 @@ X-Context: Database course - Security lab - Shared base HTML template for apps
 <html>
 <meta charset="UTF-8">
 <head>
-<title>{% block title %}{% endblock %}</title>
+<title>&#x{{ app_icon }}; {{ app_name }}</title>
 <style type="text/css">
+* {
     background-color: black;
     color: lightgreen;
     font-family: monospace;
+}
+
+table, th, td {
+    border: 1px solid;
+    border-color: lightyellow;
+    border-collapse: collapse;
+}
 </style>
 </head>
 <body>
-<div><h1>{% block title %}{% endblock %}</h1><div>
+<h1>&#x{{ app_icon }}; {{ app_name }}</h1>
 <div>{% block body %}{% endblock %}</div>
 <div><marquee><h2 style="color: red">TOP SECRET++ TOP SECRET++ TOP SECRET++</h2></marquee></div>
 </body>

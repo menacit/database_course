@@ -110,6 +110,6 @@ def load_configuration(file_path='/etc/app_configuration.yml'):
         database_settings['remote_host'], database_settings['database_name'],
         database_settings['user'], database_settings['password'])
 
-    _log.debug('Loaded app configuration: ' % repr(raw_configuration))
+    _log.debug('Loaded app configuration: ' + repr(raw_configuration))
 
-    return _log, users, check_login, database_handle
+    return _log, app_users, check_login, database_handle

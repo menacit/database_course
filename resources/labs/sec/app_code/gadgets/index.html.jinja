@@ -1,0 +1,44 @@
+{#
+SPDX-FileCopyrightText: © 2024 Menacit AB <foss@menacit.se>
+SPDX-License-Identifier: CC-BY-SA-4.0
+X-Context: Database course - Security lab - Index HTML template for "gadgets" app
+#}
+{% extends "base_template.html.jinja" %}
+{% block body %}
+<script>
+	function add_gadget() {
+		document.location.assign(
+			'/add_gadget/' + 
+			document.getElementById('gadget_name').value + '/' +
+			document.getElementById('gadget_price').value
+		)
+	};
+</script>
+<div>
+	<h2>Available gadgets</h2>
+	<table>
+		<tr>
+			<th>Name</th>
+			<th>Price (USD)</th>
+		</tr>
+	{% for gadget in gadgets %}
+		<tr>
+			<td>{{ gadget.name }}</td>
+			<td>{{ gadget.price }}</td>
+		</tr>
+	{% endfor %}
+	</table>
+</div>
+<div>
+	<h2>Add new gadget</h2>
+	<label for="gadget_name">Gadget name: </label>
+	<input type="text" id="gadget_name">
+	<br>
+	<label for="gadget_price">Gadget price: </label>
+	<input type="number" id="gadget_price" min="1">
+	<br>
+	<button onclick="add_gadget()">
+		Submit new gadget to inventory!
+	</button>
+</div>
+{% endblock %}

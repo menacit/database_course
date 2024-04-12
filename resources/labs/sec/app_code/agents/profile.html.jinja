@@ -4,13 +4,13 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 X-Context: Database course - Security lab - Profile HTML template for "agents" app
 #}
 {% extends "base_template.html.jinja" %}
-{% block title %}{{ app_name }} app - "{{ profile.code_name }}"{% endblock %}
 {% block body %}
 <script>
-	document.getElementById("assign_gadget_button").addEventListener("click", {
+	function assign_gadget() {
 		document.location.assign(
-			'/assign_gadget/{{ profile.agent_id }}/' + document.getElementById('gadget_id').value)
-	});
+			'/assign_gadget/{{ profile.agent_id }}/' + document.getElementById('gadget_id').value
+		)
+	};
 </script>
 <div>
 	<h2>Agent profile information</h2>
@@ -18,7 +18,7 @@ X-Context: Database course - Security lab - Profile HTML template for "agents" a
 	<p>{{ profile.name }}</p>
 	<h3>Code name</h3>
 	<p>{{ profile.code_name }}</p>
-	<h3>Code name</h3>
+	<h3>Salary</h3>
 	<p>{{ profile.salary }} USD</p>
 </div>
 <div>
@@ -32,13 +32,13 @@ X-Context: Database course - Security lab - Profile HTML template for "agents" a
 <div>
 	<h2>Assign new gadget to agent</h2>
 	<select id="gadget_id">
-{% for available_gadget in available_gadgets %}
+{% for available_gadget in available_gadgets if not available_gadget.name in assigned_gadgets %}
 		<option value="{{ available_gadget.gadget_id }}">
 			{{ available_gadget.name }} ({{ available_gadget.price }} USD)
 		</option>
 {% endfor %}
 	</select>
-	<button id="assign_gadget_button">
+	<button onclick="assign_gadget()">
 		Assign gadget!
 	</button>
 </div>

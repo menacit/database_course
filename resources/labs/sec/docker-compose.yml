@@ -10,13 +10,25 @@ services:
       context: "./database/build_context"
     networks:
       - "lab-db_sec"
+    # Setup of initial DBMS administrator account and database.
+    # Credentials/Database name is used by several scripts/health checks -
+    # if modified, these needs to be changed as well (not part of lab tasks)
     environment:
       "POSTGRES_USER": "db_admin"
       "POSTGRES_PASSWORD": "Ct=Snackul4"
       "POSTGRES_DB": "agency_data"
     volumes:
+      # Server configuration file for PostgreSQL (useful for adding logging)
+      - "./database/postgresql.conf:/etc/postgresql/postgresql.conf:ro"
+      # Directory containg SQL scripts that are executed to initialize database
       - "./database/first_startup_scripts:/docker-entrypoint-initdb.d:ro"
-      - "./database/data:/var/lib/postgresql/data:rw"
+      # Persistent data stored by the server container (no need to edit)
+      - "database_data:/var/lib/postgresql/data:rw"
+    command:
+      - "postgres"
+      - "-c"
+      - "config_file=/etc/postgresql/postgresql.conf"
+    # Command executed to determine when database is ready for queries by apps
     healthcheck:
       test:
         - "CMD"
@@ -27,6 +39,17 @@ services:
         - "db_admin"
       interval: "3s"
       retries: 10
+      
+  # ---------------------------------------------------------------------------
+  "jumpbox.int.agency.test":
+    build:
+      context: "./database/build_context"
+    networks:
+      - "lab-db_sec"
+    entrypoint:
+      - "/usr/bin/sleep"
+    command:
+      - "infinity"
 
   # ---------------------------------------------------------------------------
   "agents.int.agency.test":
@@ -39,12 +62,47 @@ services:
     volumes:
       - "./app_configuration/agents.yml:/etc/app_configuration.yml:ro"
     ports:
-      - "127.0.0.1:10001:5000"
+      - "10001:5000"
+    depends_on:
+      "database.int.agency.test":
+        condition: "service_healthy"
+
+  # ---------------------------------------------------------------------------
+  "payroll.int.agency.test":
+    build:
+      context: "./app_code"
+      args:
+        "APP_NAME": "payroll"
+    networks:
+      - "lab-db_sec"
+    volumes:
+      - "./app_configuration/payroll.yml:/etc/app_configuration.yml:ro"
+    ports:
+      - "10002:5000"
+    depends_on:
+      "database.int.agency.test":
+        condition: "service_healthy"
+
+  # ---------------------------------------------------------------------------
+  "gadgets.int.agency.test":
+    build:
+      context: "./app_code"
+      args:
+        "APP_NAME": "gadgets"
+    networks:
+      - "lab-db_sec"
+    volumes:
+      - "./app_configuration/gadgets.yml:/etc/app_configuration.yml:ro"
+    ports:
+      - "10003:5000"
     depends_on:
       "database.int.agency.test":
         condition: "service_healthy"
 
 # -----------------------------------------------------------------------------
+volumes:
+  "database_data": {}
+
 networks:
   "lab-db_sec":
     driver_opts:

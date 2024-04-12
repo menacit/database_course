@@ -1,0 +1,29 @@
+{#
+SPDX-FileCopyrightText: © 2024 Menacit AB <foss@menacit.se>
+SPDX-License-Identifier: CC-BY-SA-4.0
+X-Context: Database course - Security lab - Salary page HTML template for "payroll" app
+#}
+{% extends "base_template.html.jinja" %}
+{% block body %}
+<script>
+	function update_salary() {
+		document.location.assign(
+			'/update_salary/{{ agent_id }}/' + document.getElementById('new_salary').value
+		)
+	};
+</script>
+<div>
+	<h2>Employee profile information</h2>
+	<h3>Name</h3>
+	<p>{{ name }}</p>
+	<h3>Salary</h3>
+	<p>{{ salary }} USD</p>
+</div>
+<div>
+	<h2>Update salary (NOT YOUR OWN!!!)</h2>
+	<input type="number" id="new_salary" min="1000" max="1000000">
+	<button onclick="update_salary()">
+		Set new salary!
+	</button>
+</div>
+{% endblock %}
