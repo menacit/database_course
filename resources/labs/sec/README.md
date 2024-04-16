@@ -190,10 +190,11 @@ $ docker compose up --build --detach
 
 ### Resetting Compose environment
 If the student wishes to purge current state of the containers/database storage volume (in other
-words, "reset it"), execute the following command:
+words, "reset it"), execute the following commands:
 
 ```
 $ docker compose rm --volumes --stop
+$ docker volume rm sec_database_data
 ```
 
 
