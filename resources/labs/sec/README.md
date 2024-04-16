@@ -1,7 +1,8 @@
-# SPDX-FileCopyrightText: © 2024 Menacit AB <foss@menacit.se>
-# SPDX-License-Identifier: CC-BY-SA-4.0
-# X-Context: Database course - Security lab - Assignment description
-
+<!--
+SPDX-FileCopyrightText: © 2024 Menacit AB <foss@menacit.se>
+SPDX-License-Identifier: CC-BY-SA-4.0
+X-Context: Database course - Security lab - Assignment description
+-->
 
 # Database course - Security lab
 
@@ -187,6 +188,15 @@ $ docker compose up --build --detach
 ```
 
 
+### Resetting Compose environment
+If the student wishes to purge current state of the containers/database storage volume (in other
+words, "reset it"), execute the following command:
+
+```
+$ docker compose rm --volumes --stop
+```
+
+
 ### Hostname resolution in Compose
 When specifying multiple containers/services in a Docker Compose file, the different
 containers/services can utilize each others names to as network host names instead of specifying
@@ -235,6 +245,13 @@ script:
 ```
 $ ./postgres_client.sh --help
 ```
+
+
+### Difference between app and DB users
+There are two types of user credentials in the lab environment - app users and database users.
+The "app user" credentials (specified in "app\_configuration/\*.yml") are used for authentication
+against the web applications. The "database user" credentials are utilized by the web applications
+to authenticate against and query the PostgreSQL database.
 
 
 ### Asking for assistance
