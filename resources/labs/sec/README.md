@@ -269,6 +269,7 @@ course leader, the student should utter the secret passphrase "covfefe".
 - [PostgreSQL image on Docker Hub](https://hub.docker.com/_/postgres/)
 - ["psql" command documentation](https://www.postgresql.org/docs/current/app-psql.html)
 - [PGSQL connection URIs](https://www.prisma.io/dataguide/postgresql/short-guides/connection-uris)
+- [PostgreSQL Basics: Roles and privileges](https://www.red-gate.com/simple-talk/databases/postgresql/postgresql-basics-roles-and-privileges/)
 - [PostgreSQL Tutorials - CREATE role](https://www.postgresqltutorial.com/postgresql-administration/postgresql-roles/)
 - [PostgreSQL Tutorials - GRANT privileges](https://www.postgresqltutorial.com/postgresql-administration/postgresql-grant/)
 - [EDB tutorials - Column-/Row-level security](https://www.enterprisedb.com/postgres-tutorials/how-implement-column-and-row-level-security-postgresql)
