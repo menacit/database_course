@@ -82,7 +82,7 @@ Container running the web application "OpenSearch Dashboards", which can be used
 manipulate and visualize documents stored in OpenSearch. The web application is exposed to the lab
 system using port forwarding and should be accessible using the URL "http://127.0.0.1:10005".
 Credentials for authentication can be found in the environment variables for the
-"dashboards.int.agency.test" container/service in "docker-compose.yml"
+"opensearch.int.agency.test" container/service in "docker-compose.yml"
 
 
 ## Tasks
@@ -91,7 +91,6 @@ best of their abilities, try to complete as many of the tasks below during the c
 
 - Startup lab environment using Docker Compose and validate access to web applications in a browser
 - Submit a couple of example reports in the "missions" web application
-- Create "missions" index in OpenSearch
 - Modify the "missions" web application to store reports in OpenSearch index instead of PostgreSQL
 - Create a query in OpenSearch Dashboards to filter reports based on the following requirements:
   - Must have ended within the last year
@@ -252,7 +251,7 @@ $ ./jumpbox_shell.sh
 Once inside the shell, commands can be executed interactively:
 
 ```
-$ psql "postgresql://admin:Ct=Snackul4@legacy-database.int.agency.test/agency_data"
+$ psql "postgresql://admin:Ct=Snackul4@legacy-database.int.agency.test/mission_data"
 ```
 
 Alternatively, additional command-line arguments can be provided to the script which will be
