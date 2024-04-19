@@ -1,0 +1,24 @@
+---
+# SPDX-FileCopyrightText: © 2024 Menacit AB <foss@menacit.se>
+# SPDX-License-Identifier: CC-BY-SA-4.0
+# X-Context: Database course - NoSQL lab - Missions application configuration
+
+# Set to "DEBUG" for additional application logging
+log_level: "INFO"
+
+# Key == Username, Value == Password
+app_users:
+  "malory": "h3art_jakov"
+  "cheryl": "Babou2024"
+
+# Connection configuration for databases
+postgresql_settings:
+  remote_host: "legacy-database.int.agency.test"
+  database_name: "mission_data"
+  user: "db_app_user"
+  password: "0205Sopwith.Camel"
+
+opensearch_settings:
+  remote_host: "opensearch.int.agency.test"
+  user: "db_app_user"
+  password: "0205Sopwith.Camel"
