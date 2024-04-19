@@ -103,6 +103,7 @@ best of their abilities, try to complete as many of the tasks below during the c
 - Configure explicit field mapping index to define the "location" field as "geo\_point"
 - Create visualization with pie chart of participants were the mission location is Stockholm
 - Write script to migrate data from PostgreSQL database to OpenSearch index
+- Restrict privileges for the "app user in OpenSearch (see "database/opensearch\_app\_user.json")
 
 
 ## Lab report/documentation

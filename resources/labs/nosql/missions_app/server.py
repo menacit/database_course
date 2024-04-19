@@ -164,7 +164,7 @@ def handle_report_submission():
     _log.info(f'Handling mission report submission from user "{app_user}"')
 
     _log.debug('Checking content type of received request')
-    if request.headers.get('Content-Type') != 'application/json; charset=utf-8':
+    if request.headers.get('Content-Type').lower().lower() != 'application/json; charset=utf-8':
         _log.warning(f'User "{app_user}" tried submitting a report with an invalid content type')
 
         return 'Invalid content type!', 400
