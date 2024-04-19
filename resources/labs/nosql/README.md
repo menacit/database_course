@@ -259,7 +259,7 @@ executed directly inside the container:
 
 ```
 $ ./jumpbox_shell.sh \
-  https --verify=no GET "admin:Ct=Snackul4@opensearch.int.agency.test:9200/_cluster/health
+  https --verify=no GET "admin:Ct=Snackul4@opensearch.int.agency.test:9200/_cluster/health"
 ```
 
 
