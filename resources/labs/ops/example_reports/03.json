@@ -1,0 +1,17 @@
+{
+  "code_name":"Tragical Tastory",
+  "start_datetime":"2023-12-14T06:00", "end_datetime":"2023-12-15T23:30",
+  "budget": 6500, "cost": 12000,
+  "report":"Simple smash-and-grab operation in Sweden. Expense receipts got mysteriously lost.",
+  "location":{"lat":"59.325659","lon":"18.123248"},
+  "participants":[
+    "Duchess",
+    "Gilles de Rais",
+    "Chet Manley"
+  ],
+  "used_gadgets":[
+    "Tactial crowbar",
+    "Holographic projector",
+    "Spiked champagne"
+  ]
+}

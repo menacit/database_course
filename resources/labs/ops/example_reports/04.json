@@ -1,0 +1,17 @@
+{
+  "code_name":"Cracked Meatball",
+  "start_datetime":"2024-01-03T06:00", "end_datetime":"2024-01-06T23:30",
+  "budget": 7500, "cost": 81014,
+  "report":"Infiltration and theft of proprietary medical research.",
+  "location":{"lat":"52.410511","lon":"19.970409"},
+  "participants":[
+    "Duchess",
+    "Monster Hands",
+    "Chet Manley"
+  ],
+  "used_gadgets":[
+    "Holographic projector",
+    "BlakkICE malware kit",
+    "Extendable network cable"
+  ]
+}

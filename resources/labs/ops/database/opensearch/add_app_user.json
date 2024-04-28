@@ -1,0 +1,6 @@
+{
+  "password": "0205Sopwith.Camel",
+  "opendistro_security_roles": [
+    "all_access"
+  ]
+}

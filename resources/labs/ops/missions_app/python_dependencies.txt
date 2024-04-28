@@ -1,0 +1,10 @@
+# SPDX-FileCopyrightText: © 2024 Menacit AB <foss@menacit.se>
+# SPDX-License-Identifier: CC-BY-SA-4.0
+# X-Context: Database course - Operations lab - Python dependencies for missions app
+
+requests==2.31.0
+opensearch-py==2.5.0 
+psycopg[binary]==3.1.18
+PyYAML==6.0.1
+Flask==3.0.3
+Flask-HTTPAuth==4.8.0

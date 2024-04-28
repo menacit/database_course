@@ -1,0 +1,18 @@
+{
+  "code_name":"Swiss Miss",
+  "start_datetime":"2024-02-13T00:00", "end_datetime":"2024-02-15T10:00",
+  "budget": 8000, "cost": 130057,
+  "report":"Hired to prevent kidnapping attempt. Succeeded, but with an outrageous expense bill.",
+  "location":{"lat":"47.034099","lon":"8.053367"},
+  "participants":[
+    "Duchess",
+    "Gilles de Rais",
+    "Monster Hands",
+    "Chet Manley"
+  ],
+  "used_gadgets":[
+    "Tactical skis",
+    "Ski-doo Backcountry",
+    "Combat gloves"
+  ]
+}

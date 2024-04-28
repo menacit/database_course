@@ -1,0 +1,161 @@
+{#
+SPDX-FileCopyrightText: © 2024 Menacit AB <foss@menacit.se>
+SPDX-License-Identifier: CC-BY-SA-4.0
+X-Context: Database course - Operations lab - Index HTML template for missions app
+#}
+<!DOCTYPE html>
+<html>
+<meta charset="UTF-8">
+<head>
+<title>&#x1F4D2; missions</title>
+<style type="text/css">
+body, h1, h2, p, label, input, textarea, button {
+    background-color: black;
+    color: lightgreen;
+    font-family: monospace;
+}
+
+p, label, input, button {
+    font-size: 14px;
+}
+
+#mission_map {
+    height: 300px;
+    width: 350px;
+}
+</style>
+<link
+    rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""
+/>
+<script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""
+></script>
+</head>
+<body>
+    <h1>&#x1F4D2; Mission log/report form</h1>
+    <form id="report_form">
+        <p><b>Report submitter:</b> {{ app_user }}</b></p>
+        <h2>Basic information</h2>
+        <div>
+            <label for="code_name">Mission code name: </label>
+            <input required id="code_name" type="text">
+            <br>
+            <label for="start_datetime">Start date/time: </label>
+            <input required id="start_datetime" type="datetime-local">
+            <br>
+            <label for="end_datetime">End date/time: </label>
+            <input required id="end_datetime" type="datetime-local">
+            <br>
+            <label for="budget">Budget (USD): </label>
+            <input required id="budget" type="number">
+            <br>
+            <label for="cost">Actual cost (USD): </label>
+            <input required id="cost" type="number">
+        </div>
+        <h2>Report content</h2>
+        <div>
+            <textarea required id="report" rows="6" cols="45"></textarea>
+        </div>
+        <h2>Mission location (<i>click to select</i>)</h2>
+        <div>
+            <div id="mission_map"></div>
+            <br>
+            <label for="location_latitude">Latitude: </label>
+            <input required id="location_latitude" type="text">
+            <br>
+            <label for="location_longitude">Longitude: </label>
+            <input required id="location_longitude" type="text">
+        </div>
+        <h2>Participating agents</h2>
+        <p><i>Separat agent names with newline</i></p>
+        <div>
+            <textarea id="participants" rows="4" cols="45"></textarea>
+        </div>
+        <h2>Utilized gadgets</h2>
+        <p><i>Separat gadget names with newline</i></p>
+        <div>
+            <textarea id="used_gadgets" rows="4" cols="45"></textarea>
+        </div>
+        <div>
+            <br>
+            <input type="submit" value="Submit your mission report!">
+            <br>
+        </div>
+    </form>
+    <div>
+        <marquee><h2 style="color: red">TOP SECRET++ TOP SECRET++ TOP SECRET++</h2></marquee>
+    </div>
+</body>
+<script defer>
+    function on_map_click(event) {
+        console.log('Handling map location click');
+        
+        L.popup().setLatLng(event.latlng).setContent('Selected location').openOn(mission_map);
+        document.getElementById('location_latitude').value = event.latlng.lat;
+        document.getElementById('location_longitude').value = event.latlng.lng;
+    };
+
+    function get_value(id) {
+        console.log('Extracting data for input: ' + id);
+        return document.getElementById(id).value;
+    };
+
+    function submit_report(event) {
+        console.log('Handling mission report submission');
+
+        event.preventDefault();
+
+        request_data = JSON.stringify({
+            'code_name': get_value('code_name'),
+            'start_datetime': get_value('start_datetime'),
+            'end_datetime': get_value('end_datetime'),
+            'budget': parseInt(get_value('budget')),
+            'cost': parseInt(get_value('cost')),
+            'report': get_value('report'),
+            'location': {
+                'lat': get_value('location_latitude'),
+                'lon': get_value('location_longitude')
+            },
+            'participants': get_value('participants').trim().split('\n'),
+            'used_gadgets': get_value('used_gadgets').trim().split('\n')
+        });
+
+        console.log('Generated request data: ' + request_data);
+
+        let xhr = new XMLHttpRequest();
+        xhr.open('POST', '/submit_report');
+        xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+
+        xhr.onerror = function() {
+            alert('Failed to submit report request!');
+        };
+
+        xhr.onload = function() {
+            if (xhr.status != 200) {
+                alert('Failed to submit report request!');
+
+            } else {
+                alert('Mission report submitted successfully!');
+                document.location = '/'
+            };
+        };
+
+        xhr.send(request_data);
+    };
+
+    document.getElementById('report_form').addEventListener('submit', submit_report);
+
+    var mission_map = L.map('mission_map').setView([40.713956, -74.088239], 10);
+    mission_map.on('click', on_map_click);
+
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    }).addTo(mission_map);
+
+</script>
+</html>

@@ -1,0 +1,17 @@
+{
+  "code_name":"Turbulent Tastory",
+  "start_datetime":"2022-09-02T06:00", "end_datetime":"2022-09-03T23:30",
+  "budget": 7500, "cost": 9904,
+  "report":"Should have been a simple smash-and-grab operation. It failed, spectacularly.",
+  "location":{"lat":"59.325659","lon":"18.123248"},
+  "participants":[
+    "Duchess",
+    "Monster Hands",
+    "Gilles de Rais",
+    "Chet Manley"
+  ],
+  "used_gadgets":[
+    "Tactial crowbar",
+    "Holographic projector"
+  ]
+}

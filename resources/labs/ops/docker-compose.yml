@@ -1,0 +1,195 @@
+---
+# SPDX-FileCopyrightText: © 2024 Menacit AB <foss@menacit.se>
+# SPDX-License-Identifier: CC-BY-SA-4.0
+# X-Context: Database course - Operations lab - Docker Compose file
+
+services:
+  # -----------------------------------------------------------------------------------------------
+  "sql-database-1.int.agency.test":
+    hostname: "sql-database-1"
+    image: "docker.io/library/postgres:16.2-bookworm"
+    networks:
+      - "lab-db_ops"
+    # Setup of initial DBMS administrator account and database.
+    # Credentials/Database name is used by several scripts/health checks -
+    # if modified, these needs to be changed as well (not part of lab tasks)
+    environment:
+      "POSTGRES_USER": "admin"
+      "POSTGRES_PASSWORD": "Ct=Snackul4"
+      "POSTGRES_DB": "mission_data"
+    volumes:
+      # Server configuration file for PostgreSQL
+      - "./database/sql-database-1/postgresql.conf:/etc/postgresql/postgresql.conf:ro"
+      # Authentication configuration for PostgreSQL
+      - "./database/sql-database-1/pg_hba.conf:/etc/postgresql/pg_hba.conf:ro"
+      # Directory containg SQL scripts that are executed to initialize database
+      - "./database/sql-database-1/first_startup_scripts:/docker-entrypoint-initdb.d:ro"
+      # Persistent data stored by the server container (no need to edit)
+      - "sql_database_1_data:/var/lib/postgresql/data:rw"
+    command:
+      - "postgres"
+      - "-c"
+      - "config_file=/etc/postgresql/postgresql.conf"
+      - "-c"
+      - "hba_file=/etc/postgresql/pg_hba.conf"
+    # Command executed to determine when database is ready for queries by apps
+    healthcheck:
+      test:
+        - "CMD"
+        - "pg_isready"
+        - "--dbname"
+        - "mission_data"
+        - "--user"
+        - "admin"
+      interval: "3s"
+      retries: 10
+
+  # -----------------------------------------------------------------------------------------------
+  "sql-database-2.int.agency.test":
+    hostname: "sql-database-2"
+    image: "docker.io/library/postgres:16.2-bookworm"
+    networks:
+      - "lab-db_ops"
+    # Setup of initial DBMS administrator account and database.
+    # Credentials/Database name is used by several scripts/health checks -
+    # if modified, these needs to be changed as well (not part of lab tasks)
+    environment:
+      "POSTGRES_USER": "admin"
+      "POSTGRES_PASSWORD": "Ct=Snackul4"
+      "POSTGRES_DB": "mission_data"
+    volumes:
+      # Server configuration file for PostgreSQL
+      - "./database/sql-database-2/postgresql.conf:/etc/postgresql/postgresql.conf:ro"
+      # Authentication configuration for PostgreSQL
+      - "./database/sql-database-2/pg_hba.conf:/etc/postgresql/pg_hba.conf:ro"
+      # Persistent data stored by the server container (no need to edit)
+      - "sql_database_2_data:/var/lib/postgresql/data:rw"
+    command:
+      - "postgres"
+      - "-c"
+      - "config_file=/etc/postgresql/postgresql.conf"
+      - "-c"
+      - "hba_file=/etc/postgresql/pg_hba.conf"
+    # Once data has been restored from primary database server using
+    # "pg_basebackup", remove/comment out the "entrypoint" section below to start
+    # PostgreSQL process upon container startup
+    # (requires execution of "docker compose up --build --detach" or similar to refresh)
+    entrypoint:
+      - "/bin/sh"
+      - "-c"
+      - "/usr/bin/sleep infinity"
+      
+  # -----------------------------------------------------------------------------------------------
+  "jumpbox.int.agency.test":
+    hostname: "jumpbox"
+    build:
+      context: "./jumpbox"
+    networks:
+      - "lab-db_ops"
+    volumes:
+      # Directory shared with containter accessible at container path "/share"
+      - "./jumpbox/share:/share:rw"
+
+  # -----------------------------------------------------------------------------------------------
+  "opensearch.int.agency.test":
+    image: "docker.io/opensearchproject/opensearch:2.13.0"
+    networks:
+      - "lab-db_ops"
+    # Setup of initial DBMS administrator account and database.
+    # Credentials/Database name is used by several scripts/health checks -
+    # if modified, these needs to be changed as well (not part of lab tasks)
+    environment:
+      "discovery.type": "single-node"
+      "bootstrap.memory_lock": "true"
+      "path.repo": "/var/opensearch_snapshots"
+      # Default username is "admin"
+      "OPENSEARCH_INITIAL_ADMIN_PASSWORD": "Ct=Snackul4"
+    volumes:
+      # Shared directory for file system storage of index snapshots
+      - "./database/opensearch/snapshots:/var/opensearch_snapshots:rw"
+      # Persistent data stored by the server container (no need to edit)
+      - "nosql_database_data:/usr/share/opensearch/data:rw"
+    # Command executed to determine when database is ready for queries by apps
+    healthcheck:
+      test:
+        - "CMD"
+        - "curl"
+        - "--fail"
+        - "--insecure"
+        - "--user"
+        - "admin:Ct=Snackul4"
+        - "https://opensearch.int.agency.test:9200/_cluster/health"
+      start_period: "30s"
+      interval: "3s"
+      retries: 30
+
+  # -----------------------------------------------------------------------------------------------
+  # Container used to setup user in OpenSearch for "missions" web application
+  "opensearch-app-user-configurator":
+    image: "quay.io/curl/curl:8.7.1"
+    networks:
+      - "lab-db_ops"
+    volumes:
+      - "./database/opensearch/add_app_user.json:/opt/opensearch_app_user.json:ro"
+    command: >-
+      --fail-with-body --insecure --request PUT --user 'admin:Ct=Snackul4' 
+      --header 'Content-Type: application/json' 
+      --data @/opt/opensearch_app_user.json 
+      https://opensearch.int.agency.test:9200/_plugins/_security/api/internalusers/db_app_user
+    restart: "on-failure"
+    depends_on:
+      "opensearch.int.agency.test":
+        condition: "service_healthy"
+
+  # -----------------------------------------------------------------------------------------------
+  "dashboards.int.agency.test":
+    image: "docker.io/opensearchproject/opensearch-dashboards:2.13.0"
+    networks:
+      - "lab-db_ops"
+    environment:
+      "OPENSEARCH_HOSTS": '["https://opensearch.int.agency.test:9200"]'
+    # Command executed to determine when web app is read for requests
+    healthcheck:
+      test:
+        - "CMD"
+        - "curl"
+        - "--fail"
+        - "--insecure"
+        - "https://dashboards.int.agency.test:5601/"
+      start_period: "20s"
+      interval: "3s"
+      retries: 10
+    ports:
+      - "10007:5601"
+    depends_on:
+      "opensearch.int.agency.test":
+        condition: "service_healthy"
+      
+  # -----------------------------------------------------------------------------------------------
+  "missions.int.agency.test":
+    build:
+      context: "./missions_app"
+    networks:
+      - "lab-db_ops"
+    volumes:
+      - "./missions_app/configuration.yml:/etc/app_configuration.yml:ro"
+    ports:
+      - "10006:5000"
+    depends_on:
+      "sql-database-1.int.agency.test":
+        condition: "service_healthy"
+      "opensearch.int.agency.test":
+        condition: "service_healthy"
+      opensearch-app-user-configurator:
+        condition: "service_completed_successfully"
+
+# -------------------------------------------------------------------------------------------------
+volumes:
+  "sql_database_1_data": {}
+  "sql_database_2_data": {}
+  "nosql_database_data": {}
+
+networks:
+  "lab-db_ops":
+    driver_opts:
+      "com.docker.network.bridge.name": "lab-db_ops"

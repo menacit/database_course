@@ -1,0 +1,14 @@
+{
+  "code_name":"Yellow Mole",
+  "start_datetime":"2024-04-22T10:00", "end_datetime":"2024-04-22T19:15",
+  "budget": 9000, "cost": 11337,
+  "report":"Excelently performed information retrieval mission with very resonable expenses",
+  "location":{"lat":"48.965794","lon":"2.611284"},
+  "participants":[
+    "Madam"
+  ],
+  "used_gadgets":[
+    "AR sunglasses",
+    "Stealth jet"
+  ]
+}

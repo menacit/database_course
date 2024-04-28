@@ -1,0 +1,16 @@
+{
+  "code_name":"Bum Fight At Night",
+  "start_datetime":"2024-02-02T01:00", "end_datetime":"2024-02-02T03:30",
+  "budget": 500, "cost": 861,
+  "report":"Everything went as expected - the subjects started to brawl in the alley.",
+  "location":{"lat":"40.783679409824956","lon":"-77.85092353820802"},
+  "participants":[
+    "Duchess",
+    "Gilles de Rais"
+  ],
+  "used_gadgets":[
+    "Fake mustache",
+    "Stinky overcoat",
+    "Bottle of brandy"
+  ]
+}

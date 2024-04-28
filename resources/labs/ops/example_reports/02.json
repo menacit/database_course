@@ -1,0 +1,14 @@
+{
+  "code_name":"El Secuestro",
+  "start_datetime":"2023-01-15T14:00", "end_datetime":"2023-01-15T20:30",
+  "budget": 150, "cost": 36,
+  "report":"Another day, another employee kidnapping (who would ever grab Pam?!).",
+  "location":{"lat":"40.662931","lon":"-73.901118"},
+  "participants":[
+    "Duchess",
+    "Gilles de Rais"
+  ],
+  "used_gadgets":[
+    "Turtleneck"
+  ]
+}
