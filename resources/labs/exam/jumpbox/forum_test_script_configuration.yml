@@ -1,0 +1,17 @@
+---
+# SPDX-FileCopyrightText: © 2024 Menacit AB <foss@menacit.se>
+# SPDX-License-Identifier: CC-BY-SA-4.0
+# X-Context: Database course - Examination lab - Forum test script configuration
+
+# Set to "DEBUG" for more verbose script logging
+log_level: "INFO"
+
+# Base URL for forum application
+target_base_url: "http://forum.int.agency.test:5000"
+
+# Key == Username, Value == Password
+app_users:
+  "malory": "h3art_rich"
+  "cheryl": "Babou2024."
+  "cyril": "SUPPRESSINGF1RE"
+  "pam": "SwedishMeatballs"

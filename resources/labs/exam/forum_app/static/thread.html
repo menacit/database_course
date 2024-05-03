@@ -1,0 +1,178 @@
+<!--
+SPDX-FileCopyrightText: © 2024 Menacit AB <foss@menacit.se>
+SPDX-License-Identifier: CC-BY-SA-4.0
+X-Context: Database course - Examination lab - Thread HTML page for forum app
+-->
+<!DOCTYPE html>
+<html>
+<meta charset="UTF-8">
+<head>
+<title>&#x1F46A; forum</title>
+<style type="text/css">
+* {
+    background-color: black;
+    color: lightgreen;
+    font-family: monospace;
+}
+
+table, th, td {
+    border: 1px solid;
+    border-color: lightyellow;
+    border-collapse: collapse;
+    padding: 3px;
+}
+
+th, p, label, button {
+    font-weight: bold;
+}
+</style>
+</head>
+<body>
+    <h1>&#x1F444; Discussion forum thread</h1>
+    <div>
+        <h2 id="title">&#x1F4E3; Title: </h2>
+        <h2 id="author">&#x1F476; Author: </h2>
+        <h2 id="created">&#x1F557; Created timestamp: </h2>
+        <h2>&#x1F58A; Topic description</h2>
+        <p id="topic_description">Loading...</p>
+    </div>
+    </div>
+        <button id="delete_button" type="button">&#x1F4A3; Delete thread as author</button>
+    <div>
+    <div>
+        <h2>&#x1F4AC; Responses</h2>
+        <table id="responses">
+            <tr>
+                <th><b>Author and timestamp</b></th>
+                <th><b>Comment</b></th>
+            </tr>
+        </table>
+    </div>
+    <div>
+        <form id="add_response_form">
+            <h2>&#x1F4CC; Respond to thread</h2>
+            <label for="comment">Comment:</label>
+            <br>
+            <textarea id="comment" rows="4" cols="40"></textarea>
+            <br>
+            <input type="submit" value="Submit thread response!">
+        </form>
+    </div>
+    <div>
+      <h2><a href="/">&#x1F519; Return to thread list</a></h2>
+    </div>
+    <div>
+        <marquee><h2 style="color: red">TOP SECRET++ TOP SECRET++ TOP SECRET++</h2></marquee>
+    </div>
+</body>
+<script defer>
+    function add_thread_response(response) {
+        console.log(`Appending thread response from "${response['author']}"`);
+
+        let responses_table = document.getElementById('responses');
+        let table_row = document.createElement('tr');
+        let author_timestamp = document.createElement('td');
+        let comment = document.createElement('td');
+        
+        author_timestamp.innerText = response['author'] + ' @ ' + response['responded'];
+        table_row.appendChild(author_timestamp);
+        
+        comment.innerText = response['comment'];
+        table_row.appendChild(comment);
+
+        responses_table.appendChild(table_row);
+    };
+        
+    function add_thread_content(thread) {
+        console.log('Updating thread content');
+
+        document.getElementById('title').innerText += thread['title'];
+        document.getElementById('author').innerText += thread['author'];
+        document.getElementById('created').innerText += thread['created'];
+        document.getElementById('topic_description').innerText = thread['topic_description'];
+
+        thread['responses'].forEach(add_thread_response);
+    };
+    
+    function get_thread_content() {
+        console.log('Fetching thread content');
+
+        let xhr = new XMLHttpRequest();
+        xhr.open('GET', `/api/threads/${thread_id}`);
+
+        xhr.onerror = function() {
+            alert('Request to fetch thread content from server failed!');
+        };
+
+        xhr.onload = function() {
+            if (xhr.status != 200) {
+                alert('Server returned error code when fetching thread content!');
+
+            } else {
+                add_thread_content(JSON.parse(xhr.responseText));
+            };
+        };
+
+        xhr.send();
+    };
+    
+    function submit_response(event) {
+        console.log('Handling thread response submission');
+
+        event.preventDefault();
+
+        request_data = JSON.stringify(document.getElementById('comment').value);
+        console.log('Generated request data: ' + request_data);
+
+        let xhr = new XMLHttpRequest();
+        xhr.open('PUT', `/api/threads/${thread_id}`);
+        xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+
+        xhr.onerror = function() {
+            alert('Request to submit thread response failed!');
+        };
+
+        xhr.onload = function() {
+            if (xhr.status != 200) {
+                alert('Server returned error code when submitting thread response!');
+
+            } else {
+                document.location = `/thread/${thread_id}`;
+            };
+        };
+
+        xhr.send(request_data);
+    };
+
+    function delete_thread(event) {
+        console.log(`Deleting thread ID ${thread_id}`);
+
+        event.preventDefault();
+
+        let xhr = new XMLHttpRequest();
+        xhr.open('DELETE', `/api/threads/${thread_id}`);
+
+        xhr.onerror = function() {
+            alert('Request to delete thread failed!');
+        };
+
+        xhr.onload = function() {
+            if (xhr.status != 200) {
+                alert('Server returned error code when deleting thread!');
+
+            } else {
+                document.location = '/';
+            };
+        };
+
+        xhr.send();
+    };
+
+    let thread_id = Number(document.location.pathname.split('/')[2]) 
+    console.log(`Executing "main" function" with thread ID ${thread_id}`);
+    
+    get_thread_content();
+    document.getElementById('add_response_form').addEventListener('submit', submit_response);
+    document.getElementById('delete_button').addEventListener('click', delete_thread);
+</script>
+</html>

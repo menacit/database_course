@@ -1,0 +1,181 @@
+<!--
+SPDX-FileCopyrightText: © 2024 Menacit AB <foss@menacit.se>
+SPDX-License-Identifier: CC-BY-SA-4.0
+X-Context: Database course - Examination lab - Thread list HTML page for forum app
+-->
+<!DOCTYPE html>
+<html>
+<meta charset="UTF-8">
+<head>
+<title>&#x1F46A; forum</title>
+<style type="text/css">
+* {
+    background-color: black;
+    color: lightgreen;
+    font-family: monospace;
+}
+
+table, th, td {
+    border: 1px solid;
+    border-color: lightyellow;
+    border-collapse: collapse;
+    padding: 3px;
+}
+
+th, label {
+    font-weight: bold;
+}
+</style>
+</head>
+<body>
+    <h1>&#x1F46A; Discussion forum</h1>
+    <div>
+        <h2>&#x1F60D; Most active forum members</h2>
+        <ol id="top_posters"></ol>
+    </div>
+    <div>
+        <h2>&#x1F5EF; Thread list</h2>
+        <table id="thread_list">
+            <tr>
+                <th><b>Title</b></th>
+                <th><b>Author</b></th>
+                <th><b>Last updated</b></th>
+            </tr>
+        </table>
+    </div>
+    <div>
+        <form id="new_thread_form">
+            <h2>&#x1F4CC; Create new thread</h2>
+            <label for="title">Title: </label>
+            <br>
+            <input required id="title" type="text">
+            <br>
+            <label for="topic_description">Topic description:</label>
+            <br>
+            <textarea id="topic_description" rows="4" cols="40"></textarea>
+            <br>
+            <input type="submit" value="Submit new thread!">
+        </form>
+    </div>
+    <div>
+        <marquee><h2 style="color: red">TOP SECRET++ TOP SECRET++ TOP SECRET++</h2></marquee>
+    </div>
+</body>
+<script defer>
+    function add_top_posters(user) {
+        console.log(`Appending user "${user}" to list of top posters`);
+
+        let top_posters_list = document.getElementById('top_posters');
+        let list_item = document.createElement('li');
+        list_item.innerText = user;
+        top_posters_list.appendChild(list_item);
+    };
+
+    function get_top_posters() {
+        console.log('Fetching list of top posters');
+
+        let xhr = new XMLHttpRequest();
+        xhr.open('GET', '/api/top_posters');
+
+        xhr.onerror = function() {
+            alert('Request to fetch most active forum members failed!');
+        };
+
+        xhr.onload = function() {
+            if (xhr.status != 200) {
+                alert('Server returned error code when fetching top posters!');
+
+            } else {
+                JSON.parse(xhr.responseText).forEach(add_top_posters);
+            };
+        };
+
+        xhr.send();
+    };
+    
+    function add_thread(thread) {
+        console.log(`Appending topic "${thread['topic']}" to thread list`);
+
+        let thread_table = document.getElementById('thread_list');
+        let table_row = document.createElement('tr');
+        let title = document.createElement('td');
+        let author = document.createElement('td');
+        let updated = document.createElement('td');
+
+        let title_link = document.createElement('a');
+        title_link.href = `/thread/${thread['id']}`;
+        title_link.innerText = thread['title'];
+        title.appendChild(title_link);
+        table_row.appendChild(title);
+
+        author.innerText = thread['author'];
+        table_row.appendChild(author);
+
+        updated.innerText = thread['updated'];
+        table_row.appendChild(updated);
+
+        thread_table.appendChild(table_row);
+    };
+    
+    function get_thread_list() {
+        console.log('Fetching thread list');
+
+        let xhr = new XMLHttpRequest();
+        xhr.open('GET', '/api/threads');
+
+        xhr.onerror = function() {
+            alert('Request to fetch threads from server failed!');
+        };
+
+        xhr.onload = function() {
+            if (xhr.status != 200) {
+                alert('Server returned error code when fetching threads!');
+
+            } else {
+                JSON.parse(xhr.responseText).forEach(add_thread);
+            };
+        };
+
+        xhr.send();
+    };
+    
+    function submit_thread(event) {
+        console.log('Handling thread submission');
+
+        event.preventDefault();
+
+        request_data = JSON.stringify({
+            'title': document.getElementById('title').value,
+            'topic_description': document.getElementById('topic_description').value
+        });
+
+        console.log('Generated request data: ' + request_data);
+
+        let xhr = new XMLHttpRequest();
+        xhr.open('POST', '/api/threads');
+        xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+
+        xhr.onerror = function() {
+            alert('Request to submit new thread failed!');
+        };
+
+        xhr.onload = function() {
+            if (xhr.status != 200) {
+                alert('Server returned error code when submitting new thread!');
+
+            } else {
+                console.log('Extracting ID for new thread from server response');
+                let thread_id = JSON.parse(xhr.responseText);
+                document.location = `/thread/${thread_id}`;
+            };
+        };
+
+        xhr.send(request_data);
+    };
+
+    console.log('Executing "main" function"');
+    get_top_posters();
+    get_thread_list();
+    document.getElementById('new_thread_form').addEventListener('submit', submit_thread);
+</script>
+</html>

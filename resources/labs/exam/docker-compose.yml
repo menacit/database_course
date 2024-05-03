@@ -1,0 +1,114 @@
+---
+# SPDX-FileCopyrightText: © 2024 Menacit AB <foss@menacit.se>
+# SPDX-License-Identifier: CC-BY-SA-4.0
+# X-Context: Database course - Examination lab - Docker Compose file
+
+services:
+  # -----------------------------------------------------------------------------------------------
+  "database-1.int.agency.test":
+    hostname: "database-1"
+    image: "docker.io/library/postgres:16.2-bookworm"
+    networks:
+      - "lab-db_exam"
+    # Setup of initial DBMS administrator account and database.
+    # Credentials/Database name is used by several scripts/health checks -
+    # if modified, these needs to be changed as well (not part of lab tasks)
+    environment:
+      "POSTGRES_USER": "admin"
+      "POSTGRES_PASSWORD": "Ct=Snackul4"
+      "POSTGRES_DB": "forum_data"
+    volumes:
+      # Server configuration file for PostgreSQL
+      - "./database/1/postgresql.conf:/etc/postgresql/postgresql.conf:ro"
+      # Authentication configuration for PostgreSQL
+      - "./database/1/pg_hba.conf:/etc/postgresql/pg_hba.conf:ro"
+      # Persistent data stored by the server container (no need to edit)
+      - "database_1_data:/var/lib/postgresql/data:rw"
+    command:
+      - "postgres"
+      - "-c"
+      - "config_file=/etc/postgresql/postgresql.conf"
+      - "-c"
+      - "hba_file=/etc/postgresql/pg_hba.conf"
+    # Command executed to determine when database is ready for queries by apps
+    healthcheck:
+      test:
+        - "CMD"
+        - "pg_isready"
+        - "--dbname"
+        - "forum_data"
+        - "--user"
+        - "admin"
+      interval: "3s"
+      retries: 10
+
+  # -----------------------------------------------------------------------------------------------
+  "database-2.int.agency.test":
+    hostname: "database-2"
+    image: "docker.io/library/postgres:16.2-bookworm"
+    networks:
+      - "lab-db_exam"
+    # Setup of initial DBMS administrator account and database.
+    # Credentials/Database name is used by several scripts/health checks -
+    # if modified, these needs to be changed as well (not part of lab tasks)
+    environment:
+      "POSTGRES_USER": "admin"
+      "POSTGRES_PASSWORD": "Ct=Snackul4"
+      "POSTGRES_DB": "forum_data"
+    volumes:
+      # Server configuration file for PostgreSQL
+      - "./database/2/postgresql.conf:/etc/postgresql/postgresql.conf:ro"
+      # Authentication configuration for PostgreSQL
+      - "./database/2/pg_hba.conf:/etc/postgresql/pg_hba.conf:ro"
+      # Persistent data stored by the server container (no need to edit)
+      - "database_2_data:/var/lib/postgresql/data:rw"
+    command:
+      - "postgres"
+      - "-c"
+      - "config_file=/etc/postgresql/postgresql.conf"
+      - "-c"
+      - "hba_file=/etc/postgresql/pg_hba.conf"
+    # Once data has been restored from primary database server using "pg_basebackup"
+    # or other tool, remove/comment out the "entrypoint" section below to start
+    # PostgreSQL process upon container startup
+    # (requires execution of "docker compose up --build --detach" or similar to refresh)
+    entrypoint:
+      - "/bin/sh"
+      - "-c"
+      - "/usr/bin/sleep infinity"
+      
+  # -----------------------------------------------------------------------------------------------
+  "jumpbox.int.agency.test":
+    hostname: "jumpbox"
+    build:
+      context: "./jumpbox"
+    networks:
+      - "lab-db_exam"
+    volumes:
+      - "./jumpbox/forum_test_script_configuration.yml:/etc/forum_test_script_configuration.yml:ro"
+      # Directory shared with containter accessible at container path "/share"
+      - "./jumpbox/share:/share:rw"
+
+  # -----------------------------------------------------------------------------------------------
+  "forum.int.agency.test":
+    build:
+      context: "./forum_app"
+    networks:
+      - "lab-db_exam"
+    volumes:
+      - "./forum_app/configuration.yml:/etc/app_configuration.yml:ro"
+    ports:
+      - "10008:5000"
+    depends_on:
+      "database-1.int.agency.test":
+        condition: "service_healthy"
+
+# -------------------------------------------------------------------------------------------------
+volumes:
+  "database_1_data": {}
+  "database_2_data": {}
+
+networks:
+  "lab-db_exam":
+    driver_opts:
+      "com.docker.network.bridge.name": "lab-db_exam"
