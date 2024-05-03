@@ -386,8 +386,8 @@ def list_threads():
 [...]
 ```
 
-The student should make sure to remove the `response = example\_response` variable assignment after
-implementing their database queries in the `with postgresql\_client.cursor() as cursor` code block.
+The student should make sure to remove the `response = example_response` variable assignment after
+implementing their database queries in the `with postgresql_client.cursor() as cursor` code block.
 
 Once changes has been implemented, issue the command below to rebuild and restart affected
 Docker containers:
@@ -403,7 +403,7 @@ performs actions in the application as multiple users and verifies server result
 script, execute the following command and observe the output:
 
 ```
-$ ./jumpbox_shell.sh forum_test_script.py"
+$ ./jumpbox_shell.sh forum_test_script.py
 ```
 
 To increase the log verbosity of the test script, set "log\_level" setting to "DEBUG" in the
