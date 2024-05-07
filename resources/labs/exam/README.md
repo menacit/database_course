@@ -422,6 +422,35 @@ To increase the log verbosity of the test script, set "log\_level" setting to "D
 configuration file "jumpbox/forum\_test\_script\_configuration.yml".
 
 
+### "ERROR: current transaction is aborted..."
+When a database transaction fails before a commit, the cursor may stop accepting further queries
+before the transaction is rolled back. This can cause an error message in the database/application
+log, such as:
+
+```
+ERROR:  current transaction is aborted, commands ignored until end of transaction block
+```
+
+To prevent this issue, make sure to explicitly utilize the `postgresql_client.rollback()` function
+after all try-except blocks used to catch database cursor exceptions in "forum\_app/server.py":
+
+```python
+[...]
+
+    try:
+        with postgresql_client.cursor() as cursor:
+            # TODO: Write your SQL quer(y|ies) here!
+            postgresql_client.commit()
+    
+    except Exception as error_message:
+        postgresql_client.rollback()
+        raise Exception(
+            f'Failed creating thread for user "{app_user}": "{error_message}"')
+
+[...]
+```
+
+
 ### Stopping specific containers/services
 In order to selectively stop a specific container in the Compose environment, issue a command
 similar to the one demonstrated below:

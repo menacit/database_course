@@ -151,6 +151,7 @@ def list_threads():
             postgresql_client.commit()
     
     except Exception as error_message:
+        postgresql_client.rollback()
         raise Exception(
             f'Failed fetching thread list for user "{app_user}" from database: "{error_message}"')
 
@@ -223,6 +224,7 @@ def create_thread():
             postgresql_client.commit()
     
     except Exception as error_message:
+        postgresql_client.rollback()
         raise Exception(
             f'Failed creating thread for user "{app_user}": "{error_message}"')
 
@@ -279,6 +281,7 @@ def get_thread(thread_id):
             postgresql_client.commit()
     
     except Exception as error_message:
+        postgresql_client.rollback()
         raise Exception(f'Failed to fetch thread content for user "{app_user}": "{error_message}"')
 
     # TODO: Remove variable assignment below
@@ -332,6 +335,7 @@ def answer_thread(thread_id):
             postgresql_client.commit()
     
     except Exception as error_message:
+        postgresql_client.rollback()
         raise Exception(f'Failed to respond to thread for user "{app_user}": "{error_message}"')
 
     return jsonify('OK')
@@ -362,6 +366,7 @@ def delete_thread(thread_id):
             postgresql_client.commit()
     
     except Exception as error_message:
+        postgresql_client.rollback()
         raise Exception(
             f'Failed to delete thread ID {thread_id} for user "{app_user}": "{error_message}"')
 
@@ -396,6 +401,7 @@ def list_top_posters():
             postgresql_client.commit()
     
     except Exception as error_message:
+        postgresql_client.rollback()
         raise Exception(f'Failed to fetch top posters for user "{app_user}": "{error_message}"')
 
     # TODO: Remove variable assignment below
