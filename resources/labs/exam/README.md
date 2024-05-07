@@ -82,7 +82,7 @@ implemented in the forum application must be protected against SQL injection att
 
 
 ### Mandatory ("G")
-- Start up lab environment using Docker Compose and validate access to web application/database
+- Start up lab environment using Docker Compose and validate access to "database-1"
 - Design and define table structure for forum application in the database "forum\_data"
 - Create user "db\_app\_user" with privileges required to access/utilize the database "forum\_data"
 - Design/Implement database queries in app to provide functionality for "GET /api/threads"
@@ -90,6 +90,7 @@ implemented in the forum application must be protected against SQL injection att
 - Design/Implement database queries in app to provide functionality for "GET /api/threads/\$ID"
 - Design/Implement database queries in app to provide functionality for "PUT /api/threads/\$ID"
 - Design/Implement database queries in app to provide functionality for "DELETE /api/threads/\$ID"
+- Validate access and functionality in forum web application
 
 
 ### Meritorious ("VG")
@@ -272,6 +273,17 @@ executed directly inside the container:
 
 ```
 $ ./jumpbox_shell.sh http GET "http://malory:h3art_rich@forum.int.agency.test:5000/api/threads/2"
+```
+
+### Problems running shell scripts
+If problems occur when executing the "jumpbox\_shell.sh" or "database-2\_shell.sh" scripts with
+error messages like "/usr/bin/env: ‘bash\r’: No such file or directory", the scripts have been
+corrupted. To fix the issue, execute the following commands in the lab environment:
+
+```
+$ sudo apt install dos2unix -y
+$ dos2unix jumpbox_shell.sh
+$ dos2unix database-2_shell.sh
 ```
 
 
