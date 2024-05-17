@@ -11,4 +11,4 @@ RUN pip install --no-cache-dir --requirement python_dependencies.txt
 COPY health_check.py index.html.jinja server.py ./
 
 CMD ["/usr/local/bin/flask", "--app", "/usr/src/app/server.py", "run", "--host", "0.0.0.0"]
-HEALTHCHECK --interval=15s --timeout=3s --retries=3 CMD ["/usr/local/bin/python", "healh_check.py"]
+HEALTHCHECK --interval=15s --timeout=3s --retries=3 CMD ["/usr/local/bin/python", "health_check.py"]

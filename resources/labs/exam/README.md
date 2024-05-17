@@ -275,15 +275,18 @@ executed directly inside the container:
 $ ./jumpbox_shell.sh http GET "http://malory:h3art_rich@forum.int.agency.test:5000/api/threads/2"
 ```
 
-### Problems running shell scripts
-If problems occur when executing the "jumpbox\_shell.sh" or "database-2\_shell.sh" scripts with
-error messages like "/usr/bin/env: ‘bash\r’: No such file or directory", the scripts have been
-corrupted. To fix the issue, execute the following commands in the lab environment:
+### Problems running shell/Python scripts
+If problems occur when executing the "jumpbox\_shell.sh", "database-2\_shell.sh" or
+"forum\_test\_script.py" scripts with error messages like
+"/usr/bin/env: ‘bash\r’: No such file or directory", the scripts have been corrupted. To fix the
+issue, execute the following commands in the lab environment:
 
 ```
 $ sudo apt install dos2unix -y
 $ dos2unix jumpbox_shell.sh
 $ dos2unix database-2_shell.sh
+$ dos2unix jumpbox/forum_test_script.py
+$ docker compose up --build --detach
 ```
 
 

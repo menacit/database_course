@@ -12,4 +12,4 @@ ARG APP_NAME
 COPY shared_utilities.py health_check.py base_template.html.jinja ${APP_NAME}/* ./
 
 CMD ["/usr/local/bin/flask", "--app", "/usr/src/app/server.py", "run", "--host", "0.0.0.0"]
-HEALTHCHECK --interval=15s --timeout=3s --retries=3 CMD ["/usr/local/bin/python", "healh_check.py"]
+HEALTHCHECK --interval=15s --timeout=3s --retries=3 CMD ["/usr/local/bin/python", "health_check.py"]
